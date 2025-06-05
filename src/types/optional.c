@@ -40,7 +40,7 @@ static void free_optional(void* ptr, ser_type_t* self) {
 ser_type_t* ser_optional(ser_type_t* subtype) {
     ser_type_t* t = malloc(sizeof(ser_type_t));
     t->name = "optional";
-    t->kind = SER_KIND_OPTIONAL;
+    t->kind = SER_KIND_DYNAMIC;
     t->size = sizeof(void*);
     t->serialize = serialize_optional;
     t->deserialize = deserialize_optional;

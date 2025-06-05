@@ -17,11 +17,7 @@ typedef struct {
 
 typedef enum {
     SER_KIND_PRIMITIVE,
-    SER_KIND_STRUCT,
-    SER_KIND_ARRAY,
-    SER_KIND_OPTIONAL,
-    SER_KIND_POINTER,
-    SER_KIND_CUSTOM
+    SER_KIND_DYNAMIC,
 } ser_kind_t;
 
 typedef struct ser_type_t {
