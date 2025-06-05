@@ -25,6 +25,7 @@ void ser_stream_init_file(SerStream* stream, FILE* file) {
     stream->context = ctx;
     stream->write = file_write;
     stream->read = file_read;
+    stream->mode = SER_STREAM_FILE;
 }
 
 // ---------- Buffer backend ----------
@@ -64,7 +65,45 @@ void ser_stream_init_buffer(SerStream* stream, uint8_t* buffer, size_t capacity)
     stream->context = ctx;
     stream->write = buffer_write;
     stream->read = buffer_read;
+    stream->mode = SER_STREAM_BUFFER;
 }
+
+// ---------- Counter backend ----------
+
+typedef struct {
+    size_t count;
+} CounterContext;
+
+static size_t counter_write(SerStream* stream, const void* data, size_t size) {
+    CounterContext* ctx = (CounterContext*)stream->context;
+    ctx->count += size;
+    return size;
+}
+
+static size_t counter_read(SerStream* stream, void* data, size_t size) {
+    // Lecture nulle : on ne lit rien, on simule uniquement
+    return size;
+}
+
+void ser_stream_init_counter(SerStream* stream) {
+    CounterContext* ctx = malloc(sizeof(CounterContext));
+    ctx->count = 0;
+
+    stream->context = ctx;
+    stream->mode = SER_STREAM_COUNTER;
+    stream->write = counter_write;
+    stream->read = counter_read;
+}
+
+size_t ser_stream_get_count(SerStream* stream) {
+    if (stream->mode != SER_STREAM_COUNTER) return 0;
+    CounterContext* ctx = (CounterContext*)stream->context;
+    return ctx->count;
+}
+
+
+
+// ---------- Free function ----------
 
 void ser_stream_free(SerStream* stream) {
     if (stream->context) {

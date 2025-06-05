@@ -65,10 +65,6 @@ int main() {
     )
     #undef __STRUCT_TYPE__
 
-    uint8_t buffer[2048];
-    SerStream out_stream;
-    ser_stream_init_buffer(&out_stream, buffer, sizeof(buffer));
-
     Place places[ARRAY_LEN] = {
         {"Place1", {1, 2}},
         {"Place2", {3, 4}},
@@ -89,17 +85,16 @@ int main() {
         .age = {&age, NULL, NULL, NULL, NULL,
                  NULL, &age, NULL, &age, NULL},
         .location = {
-            &places[0], &places[1], NULL, &places[3], &places[4],
-            &places[5], NULL, &places[7], &places[8], &places[9]
+            NULL, &places[1], NULL, &places[3], &places[4],
+            &places[5], NULL, &places[7], NULL, NULL
         }
     };
 
-    serialize(&person, &out_stream, &ser_PersonOpt);
-    ser_stream_free(&out_stream);
-    // fclose(out);
+    size_t size = 0;
+    uint8_t* buffer = ser_serialize_to_dynamic_buffer(&person, &ser_PersonOpt, &size);
 
     SerStream in_stream;
-    ser_stream_init_buffer(&in_stream, buffer, sizeof(buffer));
+    ser_stream_init_buffer(&in_stream, buffer, size);
 
     PersonOpt person2 = {0};
     deserialize(&person2, &in_stream, &ser_PersonOpt);
@@ -128,6 +123,7 @@ int main() {
     free(ser_opt_array);
     free(ser_opt_place);
     free(ser_opt_place_array);
+    free(buffer);
 
     return 0;
 }
