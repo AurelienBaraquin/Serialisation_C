@@ -4,32 +4,26 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-#define ARRAY_LEN 10
-
 typedef struct {
-    char *str;
+    char str[64];
+    char ptr;
 } Test;
 
 int main() {
-    char buffer[64] = {0};
-    ser_type_t* ser_point_type = ser_struct(1,
-        "str", offsetof(Test, str), ser_ptr(ser_char())
+    char buffer[128] = {0};
+    ser_type_t* ser_point_type = ser_struct(2,
+        "str", offsetof(Test, str), ser_array(ser_char(), 64),
+        "ptr", offsetof(Test, ptr), ser_char()
     );
 
     Test p = {
-        .str = "Hello, World!"
+        .str = "Hello, World!",
+        .ptr = 'A'
     };
     SerStream out_stream;
     ser_stream_init_buffer(&out_stream, (uint8_t*)buffer, sizeof(buffer));
     serialize(&p, &out_stream, ser_point_type);
     ser_stream_free(&out_stream);
-
-    // print the raw buffer
-    printf("Serialized data: ");
-    for (size_t i = 0; i < sizeof(buffer); i++) {
-        printf("%c ", buffer[i]);
-    }
-    printf("\n");
 
     Test p2;
     SerStream in_stream;
@@ -37,6 +31,6 @@ int main() {
     deserialize(&p2, &in_stream, ser_point_type);
     ser_stream_free(&in_stream);
 
-    printf("Deserialized string: %s\n", p2.str);
+    printf("Deserialized string: %s, pointer: %c\n", p2.str, p2.ptr);
     return 0;
 }

@@ -17,8 +17,6 @@ ser_type_t* ser_void();
 // Combinator types for serialization
 
 ser_type_t* ser_array(ser_type_t* subtype, size_t count);
-ser_type_t* ser_optional(ser_type_t* subtype);
 ser_type_t* ser_struct(size_t field_count, ...);
-ser_type_t* ser_ptr(ser_type_t* subtype);
 
 #endif

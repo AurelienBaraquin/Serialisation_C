@@ -67,13 +67,8 @@ ser_type_t* ser_struct(size_t nb, ...) {
         size_t end = field->offset + field->type->size;
         if (end > struct_end)
             struct_end = end;
-
-        printf("Field %zu: name = %s, offset = %zu, size = %zu\n",
-            i, field->name, field->offset, field->type->size);
     }
     ser_struct_type->size = align_up(struct_end, SER_DEFAULT_ALIGNMENT);
-
-    printf("ser_struct: size = %zu\n", ser_struct_type->size);
 
     return ser_struct_type;
 }
