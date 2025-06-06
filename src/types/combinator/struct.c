@@ -39,7 +39,6 @@ ser_type_t* ser_struct(size_t nb, ...) {
     *ser_struct_type = (ser_type_t){
         .name = "struct",
         .size = 0,
-        .kind = SER_KIND_COMBINATOR,
         .serialize = serialize_struct,
         .deserialize = deserialize_struct,
         .free = free_struct,

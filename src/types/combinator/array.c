@@ -43,7 +43,6 @@ ser_type_t* ser_array(ser_type_t* subtype, size_t count) {
     *ser_array_type = (ser_type_t){
         .name = "array",
         .size = subtype->size * count,
-        .kind = SER_KIND_COMBINATOR,
         .serialize = serialize_array,
         .deserialize = deserialize_array,
         .free = free_array,

@@ -14,11 +14,6 @@ typedef struct {
     struct ser_type_t* type;
 } FieldDesc;
 
-typedef enum {
-    SER_KIND_PRIMITIVE,
-    SER_KIND_COMBINATOR,
-} ser_kind_t;
-
 typedef struct {
     union {
         struct {
@@ -44,8 +39,6 @@ typedef struct {
 typedef struct ser_type_t {
     const char* name;
     size_t size;
-
-    ser_kind_t kind;
 
     void (*serialize)(void* ptr, SerStream* out, const struct ser_type_t* self);
     void (*deserialize)(void* ptr, SerStream* in, const struct ser_type_t* self);
