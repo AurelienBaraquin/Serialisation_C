@@ -7,6 +7,8 @@ file(GLOB_RECURSE SOURCES "src/*.c")
 add_executable(Crealiz ${SOURCES})
 target_include_directories(Crealiz PRIVATE "include")
 
+target_compile_options(Crealiz PRIVATE -g3)
+
 set_target_properties(Crealiz PROPERTIES
     C_STANDARD 11
     C_STANDARD_REQUIRED ON

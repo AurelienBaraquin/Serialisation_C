@@ -1,22 +1,21 @@
-#include "ser_primitive.h"
+#include "ser_types.h"
 
 static void serialize_bool(void* ptr, SerStream* out, const ser_type_t* self) {
-    int value = *(int*)ptr;
-    out->write(out, &value, sizeof(int));
+    out->write(out, ptr, sizeof(int));
 }
 
 static void deserialize_bool(void* ptr, SerStream* in, const ser_type_t* self) {
-    int value;
-    in->read(in, &value, sizeof(int));
-    *(int*)ptr = value;
+    in->read(in, ptr, sizeof(int));
 }
 
-ser_type_t ser_bool = {
-    .name = "bool",
-    .size = sizeof(int),
-    .kind = SER_KIND_PRIMITIVE,
-    .serialize = serialize_bool,
-    .deserialize = deserialize_bool,
-    .meta.st.fields = NULL,
-    .meta.st.field_count = 0
-};
+ser_type_t* ser_bool() {
+    static ser_type_t ser_bool_type = {
+        .name = "bool",
+        .size = sizeof(int),
+        .kind = SER_KIND_PRIMITIVE,
+        .serialize = serialize_bool,
+        .deserialize = deserialize_bool,
+        .free = NULL
+    };
+    return &ser_bool_type;
+}

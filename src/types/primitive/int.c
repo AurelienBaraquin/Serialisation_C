@@ -1,21 +1,21 @@
-#include "ser_primitive.h"
+#include "ser_types.h"
 
 static void serialize_int(void* ptr, SerStream* out, const ser_type_t* self) {
-    int value = *(int*)ptr;
-    out->write(out, &value, sizeof(int));
-}
-static void deserialize_int(void* ptr, SerStream* in, const ser_type_t* self) {
-    int value;
-    in->read(in, &value, sizeof(int));
-    *(int*)ptr = value;
+    out->write(out, ptr, sizeof(int));
 }
 
-ser_type_t ser_int = {
-    .name = "int",
-    .size = sizeof(int),
-    .kind = SER_KIND_PRIMITIVE,
-    .serialize = serialize_int,
-    .deserialize = deserialize_int,
-    .meta.st.fields = NULL,
-    .meta.st.field_count = 0
-};
+static void deserialize_int(void* ptr, SerStream* in, const ser_type_t* self) {
+    in->read(in, ptr, sizeof(int));
+}
+
+ser_type_t* ser_int() {
+    static ser_type_t ser_int_type = {
+        .name = "int",
+        .size = sizeof(int),
+        .kind = SER_KIND_PRIMITIVE,
+        .serialize = serialize_int,
+        .deserialize = deserialize_int,
+        .free = NULL
+    };
+    return &ser_int_type;
+}

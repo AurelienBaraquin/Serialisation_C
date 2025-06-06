@@ -10,24 +10,24 @@ typedef struct {
 static void serialize_array(void* ptr, SerStream* out, const ser_type_t* self) {
     char* data = (char*)ptr;
 
-    for (size_t i = 0; i < self->meta.array.count; ++i) {
-        void* elem_ptr = data + i * self->meta.array.subtype->size;
-        self->meta.array.subtype->serialize(elem_ptr, out, self->meta.array.subtype);
+    for (size_t i = 0; i < self->data.array.count; ++i) {
+        void* elem_ptr = data + i * self->data.array.subtype->size;
+        self->data.array.subtype->serialize(elem_ptr, out, self->data.array.subtype);
     }
 }
 
 static void deserialize_array(void* ptr, SerStream* in, const ser_type_t* self) {
     char* data = (char*)ptr;
 
-    for (size_t i = 0; i < self->meta.array.count; ++i) {
-        void* elem_ptr = data + i * self->meta.array.subtype->size;
-        self->meta.array.subtype->deserialize(elem_ptr, in, self->meta.array.subtype);
+    for (size_t i = 0; i < self->data.array.count; ++i) {
+        void* elem_ptr = data + i * self->data.array.subtype->size;
+        self->data.array.subtype->deserialize(elem_ptr, in, self->data.array.subtype);
     }
 }
 
 static void free_array(void* ptr, ser_type_t* self) {
-    ser_type_t* subtype = self->meta.array.subtype;
-    size_t count = self->meta.array.count;
+    ser_type_t* subtype = self->data.array.subtype;
+    size_t count = self->data.array.count;
     size_t stride = subtype->size;
 
     for (size_t i = 0; i < count; i++) {
@@ -37,21 +37,22 @@ static void free_array(void* ptr, ser_type_t* self) {
 }
 
 ser_type_t* ser_array(ser_type_t* subtype, size_t count) {
-    ser_type_t* t = malloc(sizeof(ser_type_t));
-    if (!t) {
-        return NULL;
-    }
+    ser_type_t* ser_array_type = malloc(sizeof(ser_type_t));
+    if (!ser_array_type) return NULL;
 
-    *t = (ser_type_t){
+    *ser_array_type = (ser_type_t){
         .name = "array",
         .size = subtype->size * count,
-        .kind = SER_KIND_DYNAMIC,
+        .kind = SER_KIND_COMBINATOR,
         .serialize = serialize_array,
         .deserialize = deserialize_array,
         .free = free_array,
-        .meta.array.subtype = subtype,
-        .meta.array.count = count
+        .data.array = {
+            .subtype = subtype,
+            .count = count
+        }
     };
 
-    return t;
+    return ser_array_type;
 }
+

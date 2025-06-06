@@ -1,22 +1,21 @@
-#include "ser_primitive.h"
+#include "ser_types.h"
 
 static void serialize_double(void* ptr, SerStream* out, const ser_type_t* self) {
-    double value = *(double*)ptr;
-    out->write(out, &value, sizeof(double));
+    out->write(out, ptr, sizeof(double));
 }
 
 static void deserialize_double(void* ptr, SerStream* in, const ser_type_t* self) {
-    double value;
-    in->read(in, &value, sizeof(double));
-    *(double*)ptr = value;
+    in->read(in, ptr, sizeof(double));
 }
 
-ser_type_t ser_double = {
-    .name = "double",
-    .size = sizeof(double),
-    .kind = SER_KIND_PRIMITIVE,
-    .serialize = serialize_double,
-    .deserialize = deserialize_double,
-    .meta.st.fields = NULL,
-    .meta.st.field_count = 0
-};
+ser_type_t* ser_double() {
+    static ser_type_t ser_double_type = {
+        .name = "double",
+        .size = sizeof(double),
+        .kind = SER_KIND_PRIMITIVE,
+        .serialize = serialize_double,
+        .deserialize = deserialize_double,
+        .free = NULL
+    };
+    return &ser_double_type;
+}
