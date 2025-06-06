@@ -16,6 +16,7 @@ ser_type_t* ser_char();
 
 ser_type_t* ser_array(ser_type_t* subtype, size_t count);
 ser_type_t* ser_struct(size_t field_count, ...);
+ser_type_t* ser_pointer(ser_type_t* subtype);
 
 
 // Serialization and deserialization functions for primitive types
