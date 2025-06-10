@@ -19,17 +19,13 @@ typedef struct {
 } Test;
 
 int main() {
-    ser_type_t* ser_sub_type = ser_struct(2,
-        "va", offsetof(SubTest, va), ser_array(ser_float(), 3),
-        "c", offsetof(SubTest, c), ser_char()
-    );
+    ser_type_t* ser_sub_type = ser_primitive(sizeof(SubTest));
     size_t str_size = 10;
-    ser_type_t* ser_point_type = ser_struct(5,
+    ser_type_t* ser_point_type = ser_struct(4,
         "sub", offsetof(Test, sub), ser_array(ser_sub_type, 3),
         "sub_ptr", offsetof(Test, sub_ptr), ser_array(ser_pointer(ser_sub_type), 3),
         "ptr", offsetof(Test, ptr), ser_char(),
-        "ptr2", offsetof(Test, ptr2), ser_pointer(ser_pointer(ser_int())),
-        "str", offsetof(Test, str), ser_pointer(ser_dyn_array(ser_char(), &str_size))
+        "ptr2", offsetof(Test, ptr2), ser_pointer(ser_pointer(ser_int()))
     );
 
     Test p;
@@ -49,7 +45,6 @@ int main() {
     p.ptr2 = &b;
     p.str = malloc(str_size);
     strcpy(p.str, "Helloaaaa");
-    p.str = NULL;
 
     size_t size;
     char *buffer = ser_serialize_to_dynamic_buffer(&p, ser_point_type, &size);
@@ -81,7 +76,7 @@ int main() {
     } else {
         printf("p2.ptr2 is NULL\n");
     }
-    printf("p2.str: %s\n", p2.str ? p2.str : "NULL");
+    // printf("p2.str: %s\n", p2.str ? p2.str : "NULL");
 
     return 0;
 }

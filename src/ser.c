@@ -7,7 +7,7 @@ void serialize(void* obj, SerStream* out, ser_type_t* type) {
 }
 
 void deserialize(void* obj, SerStream* in, ser_type_t* type) {
-    type->deserialize(obj, in, type);
+    type->deserialize(&obj, in, type);
 }
 
 uint8_t* ser_serialize_to_dynamic_buffer(void* object, ser_type_t* type, size_t* out_size) {

@@ -16,8 +16,8 @@ static void serialize_array(void* ptr, SerStream* out, const ser_type_t* self) {
     }
 }
 
-static void deserialize_array(void* ptr, SerStream* in, const ser_type_t* self) {
-    char* data = (char*)ptr;
+static void deserialize_array(void** ptr, SerStream* in, const ser_type_t* self) {
+    char* data = (char*)*ptr;
 
     for (size_t i = 0; i < self->data.array.count; ++i) {
         void* elem_ptr = data + i * self->data.array.subtype->size;
@@ -34,6 +34,7 @@ static void free_array(void* ptr, ser_type_t* self) {
         void* elem = (char*)ptr + i * stride;
         ser_free(elem, subtype);
     }
+    free(self);
 }
 
 ser_type_t* ser_array(ser_type_t* subtype, size_t count) {

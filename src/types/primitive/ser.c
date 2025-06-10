@@ -5,11 +5,18 @@ void serialize_ser_primitive(void* ptr, SerStream* out, const ser_type_t* self) 
     out->write(out, ptr, self->size);
 }
 
-void deserialize_ser_primitive(void* ptr, SerStream* in, const ser_type_t* self) {
-    in->read(in, ptr, self->size);
+void deserialize_ser_primitive(void** ptr, SerStream* in, const ser_type_t* self) {
+    if (!*ptr)
+        *ptr = malloc(self->size);
+    in->read(in, *ptr, self->size);
 }
 
-ser_type_t* ser_primitive(char *name, size_t size) {
+void ser_free_primitive(void* ptr, ser_type_t* self) {
+    (void)ptr; // Primitive types do not require freeing the data
+    free(self);
+}
+
+ser_type_t* ser_primitive(size_t size) {
     ser_type_t* ser_primitive_type = malloc(sizeof(ser_type_t));
     if (!ser_primitive_type) return NULL;
 
@@ -28,7 +35,7 @@ ser_type_t* ser_primitive(char *name, size_t size) {
 ser_type_t* ser_##name() { \
     static ser_type_t* ser_##name##_type = NULL; \
     if (!ser_##name##_type) { \
-        ser_##name##_type = ser_primitive(#name, sizeof(type)); \
+        ser_##name##_type = ser_primitive(sizeof(type)); \
         if (!ser_##name##_type) return NULL; \
     } \
     return ser_##name##_type; \
