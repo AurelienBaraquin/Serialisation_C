@@ -28,6 +28,11 @@ typedef struct {
 
         struct {
             struct ser_type_t* subtype;
+            size_t* count;
+        } dyn_array;
+
+        struct {
+            struct ser_type_t* subtype;
         } opt;
 
         struct {
