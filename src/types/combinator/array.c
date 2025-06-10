@@ -25,15 +25,10 @@ static void deserialize_array(void** ptr, SerStream* in, const ser_type_t* self)
     }
 }
 
-static void free_array(void* ptr, ser_type_t* self) {
+static void free_array(ser_type_t* self) {
     ser_type_t* subtype = self->data.array.subtype;
-    size_t count = self->data.array.count;
-    size_t stride = subtype->size;
 
-    for (size_t i = 0; i < count; i++) {
-        void* elem = (char*)ptr + i * stride;
-        ser_free(elem, subtype);
-    }
+    ser_free(subtype);
     free(self);
 }
 

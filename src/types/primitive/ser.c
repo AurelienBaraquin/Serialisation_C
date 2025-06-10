@@ -11,38 +11,37 @@ void deserialize_ser_primitive(void** ptr, SerStream* in, const ser_type_t* self
     in->read(in, *ptr, self->size);
 }
 
-void ser_free_primitive(void* ptr, ser_type_t* self) {
-    (void)ptr; // Primitive types do not require freeing the data
+void ser_free_primitive(ser_type_t* self) {
     free(self);
 }
 
-ser_type_t* ser_primitive(size_t size) {
+ser_type_t* ser_primitive(char *name, size_t size) {
     ser_type_t* ser_primitive_type = malloc(sizeof(ser_type_t));
     if (!ser_primitive_type) return NULL;
 
     *ser_primitive_type = (ser_type_t){
-        .name = "primitive",
+        .name = name,
         .size = size,
         .serialize = serialize_ser_primitive,
         .deserialize = deserialize_ser_primitive,
-        .free = NULL
+        .free = ser_free_primitive,
     };
 
     return ser_primitive_type;
 }
 
-#define MAKE_SER_PRIMITIVE(name, type) \
-ser_type_t* ser_##name() { \
-    static ser_type_t* ser_##name##_type = NULL; \
-    if (!ser_##name##_type) { \
-        ser_##name##_type = ser_primitive(sizeof(type)); \
-        if (!ser_##name##_type) return NULL; \
-    } \
-    return ser_##name##_type; \
+ser_type_t* ser_int() {
+    return ser_primitive("int", sizeof(int));
 }
-
-MAKE_SER_PRIMITIVE(int, int)
-MAKE_SER_PRIMITIVE(float, float)
-MAKE_SER_PRIMITIVE(double, double)
-MAKE_SER_PRIMITIVE(bool, bool)
-MAKE_SER_PRIMITIVE(char, char)
+ser_type_t* ser_float() {
+    return ser_primitive("float", sizeof(float));
+}
+ser_type_t* ser_double() {
+    return ser_primitive("double", sizeof(double));
+}
+ser_type_t* ser_bool() {
+    return ser_primitive("bool", sizeof(bool));
+}
+ser_type_t* ser_char() {
+    return ser_primitive("char", sizeof(char));
+}

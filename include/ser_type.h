@@ -47,7 +47,7 @@ typedef struct ser_type_t {
 
     void (*serialize)(void* ptr, SerStream* out, const struct ser_type_t* self);
     void (*deserialize)(void** ptr, SerStream* in, const struct ser_type_t* self);
-    void (*free)(void* ptr, struct ser_type_t* self);
+    void (*free)(struct ser_type_t* self);
 
     ser_data_t data;
 } ser_type_t;

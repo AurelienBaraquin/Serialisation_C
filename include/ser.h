@@ -11,8 +11,8 @@ uint8_t* ser_serialize_to_dynamic_buffer(void* object, ser_type_t* type, size_t*
 
 void serialize_struct(void* ptr, SerStream* out, const ser_type_t* self);
 void deserialize_struct(void** ptr, SerStream* in, const ser_type_t* self);
-void free_struct(void* ptr, ser_type_t* self);
+void free_struct(ser_type_t* self);
 
-void ser_free(void* ptr, ser_type_t* type);
+void ser_free(ser_type_t* type);
 
 #endif

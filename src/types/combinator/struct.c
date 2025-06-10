@@ -20,12 +20,12 @@ void deserialize_struct(void** ptr, SerStream* in, const ser_type_t* self) {
     }
 }
 
-void free_struct(void* ptr, ser_type_t* self) {
+void free_struct(ser_type_t* self) {
     for (size_t i = 0; i < self->data.st.field_count; i++) {
         FieldDesc* f = &self->data.st.fields[i];
-        void* field_ptr = (char*)ptr + f->offset;
-        ser_free(field_ptr, f->type);
+        ser_free(f->type);
     }
+    free(self->data.st.fields);
     free(self);
 }
 

@@ -5,7 +5,7 @@
 
 // Primitive types for serialization
 
-ser_type_t* ser_primitive(size_t size);
+ser_type_t* ser_primitive(char *name, size_t size);
 
 ser_type_t* ser_int();
 ser_type_t* ser_float();

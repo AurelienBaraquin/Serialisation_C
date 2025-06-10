@@ -21,13 +21,8 @@ static void deserialize_pointer(void** ptr, SerStream* in, const ser_type_t* sel
     self->data.ptr.subtype->deserialize((void**)ptr, in, self->data.ptr.subtype);
 }
 
-static void free_pointer(void* ptr, ser_type_t* self) {
-    if (!ptr) return;
-
-    void* p = *(void**)ptr;
-    if (p) {
-        ser_free(p, self->data.ptr.subtype);
-    }
+static void free_pointer(ser_type_t* self) {
+    ser_free(self->data.ptr.subtype);
     free(self);
 }
 
